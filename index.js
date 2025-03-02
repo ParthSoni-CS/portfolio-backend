@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
+import compression from 'compression';
 import multer from 'multer';
 import { exec } from 'child_process';
 import fs from 'fs';
