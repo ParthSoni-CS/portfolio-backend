@@ -71,12 +71,24 @@ transporter.verify((error, success) => {
 });
 
 app.use(cors({
-  origin: [
-    'https://parth-soni.netlify.app',
-    'https://*.netlify.app',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173'
-  ],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow all Netlify domains with proper pattern matching
+    if (
+      origin === 'https://parth-soni.netlify.app' ||
+      origin.endsWith('.netlify.app') ||
+      origin.includes('--parth-soni.netlify.app') ||
+      origin === 'http://localhost:5173' ||
+      origin === 'http://127.0.0.1:5173'
+    ) {
+      return callback(null, true);
+    } else {
+      console.log('CORS blocked for:', origin);
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   exposedHeaders: ['set-cookie']
 }));
